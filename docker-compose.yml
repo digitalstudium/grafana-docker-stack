@@ -1,5 +1,7 @@
 version: "3.9"
+
 services:
+
   grafana:
     image: grafana/grafana:8.0.6-ubuntu
     ports:
@@ -7,6 +9,7 @@ services:
     volumes:
       - grafana-data:/var/lib/grafana
       - grafana-configs:/etc/grafana
+
   prometheus:
     image: prom/prometheus:v2.28.1
     ports:
@@ -14,6 +17,15 @@ services:
     volumes:
       - prom-data:/prometheus
       - prom-configs:/etc/prometheus
+      - ./rules.yml:/etc/prometheus/rules.yml
+
+  alertmanager:
+    image: prom/alertmanager:v0.22.2
+    ports:
+      - "9093:9093"
+    volumes:
+      - alert-configs:/etc/alertmanager
+
   node-exporter:
     image: prom/node-exporter:v1.2.0
     ports:
@@ -27,8 +39,10 @@ services:
       - '--path.sysfs=/host/sys'
       - '--collector.filesystem.mount-points-exclude'
       - '^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)'
+
 volumes:
   grafana-data:
   grafana-configs:
   prom-data:
   prom-configs:
+  alert-configs:

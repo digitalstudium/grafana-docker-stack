@@ -1,0 +1,71 @@
+groups:
+- name: Prometheus self-monitoring
+  rules:
+  - alert: Prometheus target missing
+    expr: 'up == 0'
+    annotations:
+     description: A Prometheus target has disappeared. An exporter might be crashed.
+    labels:
+      severity: critical
+  - alert: Prometheus AlertManager config not synced
+    expr: 'count(count_values("config_hash", alertmanager_config_hash)) > 1'
+    annotations:
+     description: Configurations of AlertManager cluster instances are out of sync
+    labels:
+      severity: warning
+  - alert: Prometheus target scraping slow
+    expr: 'prometheus_target_interval_length_seconds{quantile="0.9"} > 60'
+    annotations:
+     description: Prometheus is scraping exporters slowly
+    labels:
+      severity: warning
+    for: 5m
+- name: Host and hardware
+  rules:
+  - alert: Host out of memory
+    expr: 'node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes * 100 < 10'
+    annotations:
+     description: Node memory is filling up (< 10% left)
+    labels:
+      severity: warning
+    for: 2m
+  - alert: Host out of disk space
+    expr: '(node_filesystem_avail_bytes * 100) / node_filesystem_size_bytes < 10 and ON (instance, device, mountpoint) node_filesystem_readonly == 0'
+    annotations:
+     description: Disk is almost full (< 10% left)
+    labels:
+      severity: warning
+    for: 2m
+  - alert: Host out of inodes
+    expr: 'node_filesystem_files_free{mountpoint ="/rootfs"} / node_filesystem_files{mountpoint="/rootfs"} * 100 < 10 and ON (instance, device, mountpoint) node_filesystem_readonly{mountpoint="/rootfs"} == 0'
+    annotations:
+     description: Disk is almost running out of available inodes (< 10% left)
+    labels:
+      severity: warning
+    for: 2m
+  - alert: Host high CPU load
+    expr: '100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[2m])) * 100) > 80'
+    annotations:
+     description: CPU load is > 80%
+    labels:
+      severity: warning
+  - alert: Host physical component too hot
+    expr: 'node_hwmon_temp_celsius > 75'
+    annotations:
+     description: "Physical hardware component too hot"
+    labels:
+      severity: warning
+    for: 5m
+  - alert: Host OOM kill detected
+    expr: 'increase(node_vmstat_oom_kill[1m]) > 0'
+    annotations:
+     description: OOM kill detected
+    labels:
+      severity: warning
+  - alert: Host clock skew
+    expr: '(node_timex_offset_seconds > 0.05 and deriv(node_timex_offset_seconds[5m]) >= 0) or (node_timex_offset_seconds < -0.05 and deriv(node_timex_offset_seconds[5m]) <= 0)'
+    annotations:
+     description: 'Clock skew detected. Clock is out of sync.'
+    labels:
+      severity: warning
+    for: 2m
