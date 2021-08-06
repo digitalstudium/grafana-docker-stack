@@ -24,7 +24,19 @@ services:
     ports:
       - "9093:9093"
     volumes:
+      - alert-data:/alertmanager
       - alert-configs:/etc/alertmanager
+
+  alertmanager-bot:
+    image: metalmatze/alertmanager-bot:0.4.3
+    environment:
+      TELEGRAM_ADMIN: "<user_id>"
+      TELEGRAM_TOKEN: "<bot_id>"
+      ALERTMANAGER_URL: http://alertmanager:9093
+      STORE: bolt
+      BOLT_PATH: /data/bot.db
+    volumes:
+      - alert-bot-data:/data
 
   node-exporter:
     image: prom/node-exporter:v1.2.0
@@ -45,4 +57,6 @@ volumes:
   grafana-configs:
   prom-data:
   prom-configs:
+  alert-data:
   alert-configs:
+  alert-bot-data:
