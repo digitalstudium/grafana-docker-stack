@@ -3,43 +3,33 @@ version: "3.9"
 services:
 
   grafana:
-    image: grafana/grafana:8.0.6-ubuntu
+    image: grafana/grafana:9.3.6-ubuntu
     ports:
       - "3000:3000"
     volumes:
       - grafana-data:/var/lib/grafana
-      - grafana-configs:/etc/grafana
+      - ./configs/grafana/datasources:/etc/grafana/provisioning/datasources/
+      - ./configs/grafana/dashboards:/etc/grafana/provisioning/dashboards/
 
   prometheus:
-    image: prom/prometheus:v2.28.1
+    image: prom/prometheus:v2.42.0
     ports:
       - "9090:9090"
     volumes:
       - prom-data:/prometheus
-      - prom-configs:/etc/prometheus
-      - ./rules.yml:/etc/prometheus/rules.yml
+      - ./configs/prometheus/alert_rules.yml:/etc/prometheus/alert_rules.yml
+      - ./configs/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
 
   alertmanager:
-    image: prom/alertmanager:v0.22.2
+    image: prom/alertmanager:v0.25.0
     ports:
       - "9093:9093"
     volumes:
       - alert-data:/alertmanager
-      - alert-configs:/etc/alertmanager
-
-  alertmanager-bot:
-    image: metalmatze/alertmanager-bot:0.4.3
-    environment:
-      TELEGRAM_ADMIN: "<user_id>"
-      TELEGRAM_TOKEN: "<bot_id>"
-      ALERTMANAGER_URL: http://alertmanager:9093
-      STORE: bolt
-      BOLT_PATH: /data/bot.db
-    volumes:
-      - alert-bot-data:/data
+      - ./configs/alertmanager.yml:/etc/alertmanager/alertmanager.yml
 
   node-exporter:
-    image: prom/node-exporter:v1.2.0
+    image: prom/node-exporter:v1.5.0
     ports:
       - "9100:9100"
     volumes:
@@ -52,11 +42,17 @@ services:
       - '--collector.filesystem.mount-points-exclude'
       - '^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)'
 
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.47.0
+    ports:
+    - 8080:8080
+    volumes:
+    - /:/rootfs:ro
+    - /var/run:/var/run:rw
+    - /sys:/sys:ro
+    - /var/lib/docker/:/var/lib/docker:ro
+
 volumes:
   grafana-data:
-  grafana-configs:
   prom-data:
-  prom-configs:
   alert-data:
-  alert-configs:
-  alert-bot-data:

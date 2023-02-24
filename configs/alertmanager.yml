@@ -1,0 +1,18 @@
+route:
+  receiver: 'telegram'
+  routes:    
+  # All alerts with severity=warning or severity=critical
+  # are dispatched to the telegram receiver.
+  - receiver: 'telegram'
+    group_wait: 10s
+    matchers:
+    - severity=~"warning|critical"
+
+receivers:
+- name: 'telegram'
+  telegram_configs:
+  - bot_token: "00000:ddddddddddddddddddd"
+    chat_id: -000000
+
+#  https://api.telegram.org/botINSERT_BOT_ID_HERE/getUpdates - to get chat_id
+#  amtool --alertmanager.url=http://localhost:9093/ alert add alertname="Test alert" severity="warning" job="test-job" - to send test alert
