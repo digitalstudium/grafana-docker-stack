@@ -5,7 +5,7 @@ For deploying Grafana, Prometheus and Node Exporter, make these steps:
 ```
 git clone https://github.com/digitalstudium/grafana-docker-stack.git
 ```
-2. Change configs if nececcery (at least `configs/alertmanager.yml` to configure notification channels)
+2. Change configs if necessary (at least `configs/alertmanager.yml` to configure notification receivers)
 3. Deploy stack
 ```bash
 docker stack deploy -c grafana-docker-stack/docker-compose.yml monitoring
