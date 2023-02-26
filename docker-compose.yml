@@ -15,6 +15,13 @@ services:
     image: prom/prometheus:v2.42.0
     ports:
       - "9090:9090"
+    # Change 127.0.0.1 to ip address of node where docker satck is deployed     
+    command: 
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus" 
+      - "--web.external-url=http://127.0.0.1:9090"
+      - "--web.console.libraries=/usr/share/prometheus/console_libraries" 
+      - "--web.console.templates=/usr/share/prometheus/consoles"
     volumes:
       - prom-data:/prometheus
       - ./configs/prometheus/alert_rules.yml:/etc/prometheus/alert_rules.yml
@@ -24,6 +31,11 @@ services:
     image: prom/alertmanager:v0.25.0
     ports:
       - "9093:9093"
+    # Change 127.0.0.1 to ip address of node where docker satck is deployed 
+    command: 
+      - "--config.file=/etc/alertmanager/alertmanager.yml"
+      - "--storage.path=/alertmanager" 
+      - "--web.external-url=http://127.0.0.1:9093"      
     volumes:
       - alert-data:/alertmanager
       - ./configs/alertmanager.yml:/etc/alertmanager/alertmanager.yml
