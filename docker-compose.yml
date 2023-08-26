@@ -16,12 +16,12 @@ services:
     ports:
       - "9090:9090"
     # Change 77.222.52.251 to ip address of node where docker satck is deployed     
-    command: 
-      - "--config.file=/etc/prometheus/prometheus.yml"
-      - "--storage.tsdb.path=/prometheus" 
-      - "--web.external-url=http://77.222.52.251:9090"
-      - "--web.console.libraries=/usr/share/prometheus/console_libraries" 
-      - "--web.console.templates=/usr/share/prometheus/consoles"
+    # command: 
+    #   - "--config.file=/etc/prometheus/prometheus.yml"
+    #   - "--storage.tsdb.path=/prometheus" 
+    #   - "--web.external-url=http://77.222.52.251:9090"
+    #   - "--web.console.libraries=/usr/share/prometheus/console_libraries" 
+    #   - "--web.console.templates=/usr/share/prometheus/consoles"
     volumes:
       - prom-data:/prometheus
       - ./configs/prometheus/alert_rules.yml:/etc/prometheus/alert_rules.yml
