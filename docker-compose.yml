@@ -6,8 +6,6 @@ services:
     image: grafana/grafana:9.3.6-ubuntu
     ports:
       - "3000:3000"
-    networks:
-      - isolated
     volumes:
       - grafana-data:/var/lib/grafana
       - ./configs/grafana/datasources:/etc/grafana/provisioning/datasources/
@@ -17,8 +15,6 @@ services:
     image: prom/prometheus:v2.42.0
     ports:
       - "9090:9090"
-    networks:
-      - isolated
     # Change 77.222.52.251 to ip address of node where docker satck is deployed     
     command: 
       - "--config.file=/etc/prometheus/prometheus.yml"
@@ -35,8 +31,6 @@ services:
     image: prom/alertmanager:v0.25.0
     ports:
       - "9093:9093"
-    networks:
-      - isolated
     # Change 127.0.0.1 to ip address of node where docker satck is deployed 
     command: 
       - "--config.file=/etc/alertmanager/alertmanager.yml"
@@ -50,8 +44,6 @@ services:
     image: prom/node-exporter:v1.5.0
     ports:
       - "9100:9100"
-    networks:
-      - isolated
     volumes:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
@@ -66,8 +58,6 @@ services:
     image: gcr.io/cadvisor/cadvisor:v0.47.0
     ports:
     - 8080:8080
-    networks:
-      - isolated
     volumes:
     - /:/rootfs:ro
     - /var/run:/var/run:rw
@@ -78,7 +68,3 @@ volumes:
   grafana-data:
   prom-data:
   alert-data:
-
-networks:
-  isolated:
-    internal: true
