@@ -1,5 +1,5 @@
 # grafana-docker-stack
-
+Тут надо со своего копировать
 For deploying Grafana, Prometheus and Node Exporter, make these steps:
 1. Clone repo
 ```
