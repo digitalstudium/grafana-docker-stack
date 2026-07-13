@@ -11,7 +11,7 @@ git clone https://github.com/digitalstudium/grafana-docker-stack.git -b alertman
 docker stack deploy -c grafana-docker-stack/docker-compose.yml monitoring
 ```
 
-That's it!
+That's it! Grafana is available on <ip or hostname>:3000, login `admin` password `admin`
 
 If you want to add more servers to prometheus, make these steps:
 1. Install node-exporter to each of these servers via these commands:
